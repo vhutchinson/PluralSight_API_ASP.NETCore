@@ -18,10 +18,12 @@ namespace CoreCodeCamp.Data
                 .ReverseMap();
 
             // Mapping between Talk and TalkModel
-            this.CreateMap<Talk, TalkModel>();
+            this.CreateMap<Talk, TalkModel>()
+                .ReverseMap();
 
             // Mapping between Speaker and SpeakerModel
-            this.CreateMap<Speaker, SpeakerModel>();
+            this.CreateMap<Speaker, SpeakerModel>()
+                .ReverseMap();
         }
     }
 }
