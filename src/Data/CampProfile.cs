@@ -14,12 +14,14 @@ namespace CoreCodeCamp.Data
         {
             // Mapping between Camp and CampModel
             this.CreateMap<Camp, CampModel>()
-                .ForMember(c => c.Venue, o => o.MapFrom(m => m.Location.VenueName))
+                .ForMember(c => c.Venue, o => o.MapFrom(m => m.Location.VenueName)) // Venue in CampModel comes from Camp's Location's VenueName
                 .ReverseMap();
 
             // Mapping between Talk and TalkModel
             this.CreateMap<Talk, TalkModel>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(t => t.Camp, opt => opt.Ignore())        // Do not map Camp for TalkModel -> Talk only
+                .ForMember(t => t.Speaker, opt => opt.Ignore());    // Do not map Speaker for TalkModel -> Talk only
 
             // Mapping between Speaker and SpeakerModel
             this.CreateMap<Speaker, SpeakerModel>()
