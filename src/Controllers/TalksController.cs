@@ -79,11 +79,11 @@ namespace CoreCodeCamp.Controllers
 
                 if(await _repository.SaveChangesAsync())
                 {
-                    var url = _linkGenerator.GetPathByAction(HttpContext,
+                    var location = _linkGenerator.GetPathByAction(HttpContext,
                         "Get",
                         values: new { moniker, id = talk.TalkId });
 
-                    return Created(url, _mapper.Map<TalkModel>(talk));
+                    return Created(location, _mapper.Map<TalkModel>(talk));
                 }
             }
             catch (Exception)
@@ -93,6 +93,39 @@ namespace CoreCodeCamp.Controllers
             }
 
             return BadRequest("Failed to save new talk");
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<TalkModel>> Put(string moniker, int id, TalkModel model)
+        {
+            try
+            {
+                var talk = await _repository.GetTalkByMonikerAsync(moniker, id, true);
+                if (talk == null) return NotFound("Could not find the talk");
+
+                if(model.Speaker != null)
+                {
+                    var speaker = await _repository.GetSpeakerAsync(model.Speaker.SpeakerId);
+                    if (speaker != null)
+                    {
+                        talk.Speaker = speaker;
+                    }
+                }
+
+                _mapper.Map(model, talk);
+
+                if (await _repository.SaveChangesAsync())
+                {
+                    return _mapper.Map<TalkModel>(talk);
+                }
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
+
+            return BadRequest("Failed to update the talk");
         }
     }
 }
