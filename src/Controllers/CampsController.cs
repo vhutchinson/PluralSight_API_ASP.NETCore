@@ -111,7 +111,7 @@ namespace CoreCodeCamp.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
             }
 
-            return BadRequest();
+            return BadRequest("Failed to save new camp");
         }
 
         [HttpPut("{moniker}")]
@@ -135,7 +135,7 @@ namespace CoreCodeCamp.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
             }
 
-            return BadRequest();
+            return BadRequest("Failed to update the camp");
         }
 
         [HttpDelete("{moniker}")]
