@@ -15,22 +15,22 @@ namespace CoreCodeCamp.Controllers
     public class CampsController : ControllerBase
     {
         private readonly ICampRepository _repository;
+        private readonly IMapper _mapper;
 
         public CampsController(ICampRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<CampModel[]>> Get()
         {
             try
             {
                 var results = await _repository.GetAllCampsAsync();
 
-                CampModel[] models = 
-
-                return Ok(results);
+                return _mapper.Map<CampModel[]>(results);
             }
             catch (Exception)
             {
