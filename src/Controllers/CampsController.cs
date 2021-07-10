@@ -82,6 +82,12 @@ namespace CoreCodeCamp.Controllers
         {
             try
             {
+                var campExists = await _repository.GetCampAsync(model.Moniker);
+                if (campExists != null)
+                {
+                    return BadRequest("Moniker in use");
+                }
+
                 var location = _linkGenerator.GetPathByAction("Get",
                     "Camps",
                     new { moniker = model.Moniker });
@@ -97,6 +103,30 @@ namespace CoreCodeCamp.Controllers
                 if (await _repository.SaveChangesAsync())
                 {
                     return Created(location, _mapper.Map<CampModel>(camp));
+                }
+            }
+            catch (Exception)
+            {
+
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPut("{moniker}")]
+        public async Task<ActionResult<CampModel>> Put(string moniker, CampModel model)
+        {
+            try
+            {
+                var oldCamp = await _repository.GetCampAsync(moniker);
+                if (oldCamp == null) NotFound($"Could not find camp with moniker of {moniker}");
+
+                _mapper.Map(model, oldCamp);
+
+                if(await _repository.SaveChangesAsync())
+                {
+                    return _mapper.Map<CampModel>(oldCamp);
                 }
             }
             catch (Exception)
