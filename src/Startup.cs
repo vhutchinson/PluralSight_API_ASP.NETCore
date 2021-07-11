@@ -33,16 +33,9 @@ namespace CoreCodeCamp
                 opt.AssumeDefaultVersionWhenUnspecified = true;
                 opt.DefaultApiVersion = new ApiVersion(1, 1);
                 opt.ReportApiVersions = true;
-                opt.ApiVersionReader = new UrlSegmentApiVersionReader();
-                //opt.ApiVersionReader = ApiVersionReader.Combine(
-                //    new HeaderApiVersionReader("X-Version"),
-                //    new QueryStringApiVersionReader("ver", "version"));
-
-                opt.Conventions.Controller<TalksController>().HasApiVersion(new ApiVersion(1, 0));
-                opt.Conventions.Controller<TalksController>().HasApiVersion(new ApiVersion(1, 1));
-                opt.Conventions.Controller<TalksController>()
-                .Action(c => c.Delete(default(string), default(int)))
-                .MapToApiVersion(1,1);
+                opt.ApiVersionReader = ApiVersionReader.Combine(
+                    new HeaderApiVersionReader("X-Version"),
+                    new QueryStringApiVersionReader("ver", "version"));
             });
 
             services.AddControllers();
