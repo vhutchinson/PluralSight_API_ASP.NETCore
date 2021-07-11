@@ -172,5 +172,15 @@ namespace CoreCodeCamp.Data
 
       return await query.FirstOrDefaultAsync();
     }
+
+    public async Task<Speaker[]> GetAllSpeakersByCompany(string company)
+    {
+        _logger.LogInformation($"Getting Speakers by Company");
+
+        var query = _context.Speakers.OrderBy(s => s.SpeakerId)
+            .Where(s => s.Company == company);
+
+        return await query.ToArrayAsync();
+    }
   }
 }
