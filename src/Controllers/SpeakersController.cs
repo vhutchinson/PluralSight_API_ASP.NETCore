@@ -27,6 +27,7 @@ namespace CoreCodeCamp.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        // Get all Speakers.
         [Route("/api/[controller]")]
         [HttpGet]
         public async Task<ActionResult<SpeakerModel[]>> Get()
@@ -44,14 +45,14 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
+        // Get Speaker by ID.
         [HttpGet("/api/[controller]/{id:int}")]
         public async Task<ActionResult<SpeakerModel>> Get(int id)
         {
             try
             {
                 var speaker = await _repository.GetSpeakerAsync(id);
-
-                if (speaker == null) return NotFound("Speaker was not found");
+                if (speaker == null) return NotFound($"Speaker with id {id} was not found");
 
                 return _mapper.Map<SpeakerModel>(speaker);
             }
@@ -62,6 +63,7 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
+        // Get Speaker by Camp moniker.
         [HttpGet]
         public async Task<ActionResult<SpeakerModel[]>> GetByCamp(string moniker)
         {
@@ -77,6 +79,7 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
+        // Get Speakers corresponding to a company.
         [HttpGet("search")]
         public async Task<ActionResult<SpeakerModel[]>> SearchByCompany(string company)
         {
@@ -84,7 +87,7 @@ namespace CoreCodeCamp.Controllers
             {
                 var speakers = await _repository.GetAllSpeakersByCompany(company);
 
-                if (!speakers.Any()) return NotFound("No speakers found for that company");
+                if (!speakers.Any()) return NotFound($"No speakers found for company {company}");
 
                 return _mapper.Map<SpeakerModel[]>(speakers);
             }

@@ -28,6 +28,7 @@ namespace CoreCodeCamp.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        // Get All Camps, returning along with Camps count.
         [HttpGet]
         public async Task<ActionResult> Get(bool includeTalks = false)
         {
@@ -48,6 +49,7 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
+        // Get Camp By Moniker.
         [HttpGet("{moniker}")]
         public async Task<ActionResult<CampModel>> Get(string moniker)
         {
@@ -55,7 +57,7 @@ namespace CoreCodeCamp.Controllers
             {
                 var result = await _repository.GetCampAsync(moniker);
 
-                if (result == null) return NotFound();
+                if (result == null) return NotFound("Could not find camp");
 
                 return _mapper.Map<CampModel>(result);
             }
@@ -65,6 +67,7 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
+        // Get Camps corresponding to a date.
         [HttpGet("search")]
         public async Task<ActionResult<CampModel[]>> SearchByDate(DateTime theDate, bool includeTalks = false)
         {
@@ -72,7 +75,7 @@ namespace CoreCodeCamp.Controllers
             {
                 var results = await _repository.GetAllCampsByEventDate(theDate, includeTalks);
 
-                if (!results.Any()) return NotFound();
+                if (!results.Any()) return NotFound("Could not find camps on that date");
 
                 return _mapper.Map<CampModel[]>(results);
             }
@@ -83,21 +86,23 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
+        // Create Camp, assuming it does not already exist.
         [HttpPost]
         public async Task<ActionResult<CampModel>> Post(CampModel model)
         {
             try
             {
+                // Check if a Camp with that moniker already exists
                 var campExists = await _repository.GetCampAsync(model.Moniker);
                 if (campExists != null)
                 {
                     return BadRequest("Moniker in use");
                 }
 
+                // Generate URI for Camp
                 var location = _linkGenerator.GetPathByAction("Get",
                     "Camps",
                     new { moniker = model.Moniker });
-
                 if (string.IsNullOrEmpty(location))
                 {
                     return BadRequest("Could not use current moniker");
@@ -119,12 +124,14 @@ namespace CoreCodeCamp.Controllers
 
             return BadRequest("Failed to save new camp");
         }
-
+        
+        // Update Camp with new model, assuming one already exists with the given moniker.
         [HttpPut("{moniker}")]
         public async Task<ActionResult<CampModel>> Put(string moniker, CampModel model)
         {
             try
             {
+                // Look for the Camp to update
                 var oldCamp = await _repository.GetCampAsync(moniker);
                 if (oldCamp == null) NotFound($"Could not find camp with moniker of {moniker}");
 
@@ -144,11 +151,13 @@ namespace CoreCodeCamp.Controllers
             return BadRequest("Failed to update the camp");
         }
 
+        // Delete Camp by moniker.
         [HttpDelete("{moniker}")]
         public async Task<IActionResult> Delete(string moniker)
         {
             try
             {
+                // Look for the Camp to delete
                 var oldCamp = await _repository.GetCampAsync(moniker);
                 if (oldCamp == null) return NotFound($"Could not find camp with moniker of {moniker}");
 
