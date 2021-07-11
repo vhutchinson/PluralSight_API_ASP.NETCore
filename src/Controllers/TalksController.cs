@@ -83,6 +83,11 @@ namespace CoreCodeCamp.Controllers
                         "Get",
                         values: new { moniker, id = talk.TalkId });
 
+                    if(string.IsNullOrEmpty(location))
+                    {
+                        return BadRequest("Could not use current talk ID");
+                    }
+
                     return Created(location, _mapper.Map<TalkModel>(talk));
                 }
             }

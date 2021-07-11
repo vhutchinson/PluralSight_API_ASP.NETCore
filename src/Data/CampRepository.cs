@@ -138,6 +138,21 @@ namespace CoreCodeCamp.Data
       return await query.FirstOrDefaultAsync();
     }
 
+    public async Task<Talk[]> GetAllTalksAsync(bool includeSpeakers = false)
+    {
+        _logger.LogInformation($"Getting all Talks");
+
+        var query = _context.Talks
+            .OrderBy(t => t.TalkId);
+
+        if (includeSpeakers)
+        {
+            query.Include(t => t.Speaker);
+        }
+
+        return await query.ToArrayAsync();
+    }
+
     public async Task<Speaker[]> GetSpeakersByMonikerAsync(string moniker)
     {
       _logger.LogInformation($"Getting all Speakers for a Camp");

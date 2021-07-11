@@ -19,6 +19,7 @@ namespace CoreCodeCamp.Data
     // Talks
     Task<Talk> GetTalkByMonikerAsync(string moniker, int talkId, bool includeSpeakers = false);
     Task<Talk[]> GetTalksByMonikerAsync(string moniker, bool includeSpeakers = false);
+    Task<Talk[]> GetAllTalksAsync(bool includeSpeakers = false);
 
     // Speakers
     Task<Speaker[]> GetSpeakersByMonikerAsync(string moniker);

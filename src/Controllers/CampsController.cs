@@ -12,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace CoreCodeCamp.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/[controller]")]
+    //[Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiVersion("1.1")]
     [ApiController]
@@ -52,7 +53,7 @@ namespace CoreCodeCamp.Controllers
             {
                 var result = await _repository.GetCampAsync(moniker);
 
-                if (result == null) return NotFound();
+                if (result == null) return NotFound("Camp was not found");
 
                 return _mapper.Map<CampModel>(result);
             }

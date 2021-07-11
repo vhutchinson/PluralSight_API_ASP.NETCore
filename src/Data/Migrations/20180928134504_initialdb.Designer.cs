@@ -100,6 +100,8 @@ namespace CoreCodeCamp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("TalkId");
+
                     b.Property<string>("BlogUrl");
 
                     b.Property<string>("Company");
@@ -118,12 +120,15 @@ namespace CoreCodeCamp.Migrations
 
                     b.HasKey("SpeakerId");
 
+                    b.HasIndex("TalkId");
+
                     b.ToTable("Speakers");
 
                     b.HasData(
                         new
                         {
                             SpeakerId = 1,
+                            TalkId = 1,
                             BlogUrl = "http://wildermuth.com",
                             Company = "Wilder Minds LLC",
                             CompanyUrl = "http://wilderminds.com",
@@ -135,6 +140,7 @@ namespace CoreCodeCamp.Migrations
                         new
                         {
                             SpeakerId = 2,
+                            TalkId = 2,
                             BlogUrl = "http://shawnandresa.com",
                             Company = "Wilder Minds LLC",
                             CompanyUrl = "http://wilderminds.com",
@@ -207,6 +213,13 @@ namespace CoreCodeCamp.Migrations
                         .WithMany()
                         .HasForeignKey("SpeakerId");
                 });
+            
+            modelBuilder.Entity("CoreCodeCamp.Data.Speaker", b =>
+                 {
+                     b.HasOne("CoreCodeCamp.Data.Talk", "Talk")
+                        .WithOne("Speaker")
+                        .HasForeignKey("TalkID");
+                 });
 #pragma warning restore 612, 618
         }
     }

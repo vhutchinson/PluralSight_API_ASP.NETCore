@@ -14,7 +14,7 @@ namespace CoreCodeCamp.Data
         {
             // Mapping between Camp and CampModel
             this.CreateMap<Camp, CampModel>()
-                .ForMember(c => c.Venue, o => o.MapFrom(m => m.Location.VenueName)) // Venue in CampModel comes from Camp's Location's VenueName
+                .ForMember(c => c.Venue, opt => opt.MapFrom(m => m.Location.VenueName)) // Venue in CampModel comes from Camp's Location's VenueName
                 .ReverseMap();
 
             // Mapping between Talk and TalkModel
@@ -25,7 +25,8 @@ namespace CoreCodeCamp.Data
 
             // Mapping between Speaker and SpeakerModel
             this.CreateMap<Speaker, SpeakerModel>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(s => s.Talk, opt => opt.Ignore());
         }
     }
 }
