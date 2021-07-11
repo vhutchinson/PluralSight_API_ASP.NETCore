@@ -33,7 +33,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<bool> SaveChangesAsync()
     {
-      _logger.LogInformation($"Attempitng to save the changes in the context");
+      _logger.LogInformation($"Attempitng to save the changes in the context.");
 
       // Only return success if at least one row was changed
       return (await _context.SaveChangesAsync()) > 0;
@@ -41,7 +41,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Camp[]> GetAllCampsByEventDate(DateTime dateTime, bool includeTalks = false)
     {
-      _logger.LogInformation($"Getting all Camps");
+      _logger.LogInformation($"Getting all Camps corresponding to event date {dateTime}.");
 
       IQueryable<Camp> query = _context.Camps
           .Include(c => c.Location);
@@ -62,7 +62,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Camp[]> GetAllCampsAsync(bool includeTalks = false)
     {
-      _logger.LogInformation($"Getting all Camps");
+      _logger.LogInformation($"Getting all Camps.");
 
       IQueryable<Camp> query = _context.Camps
           .Include(c => c.Location);
@@ -82,7 +82,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Camp> GetCampAsync(string moniker, bool includeTalks = false)
     {
-      _logger.LogInformation($"Getting a Camp for {moniker}");
+      _logger.LogInformation($"Getting a Camp for {moniker}.");
 
       IQueryable<Camp> query = _context.Camps
           .Include(c => c.Location);
@@ -101,7 +101,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Talk[]> GetTalksByMonikerAsync(string moniker, bool includeSpeakers = false)
     {
-      _logger.LogInformation($"Getting all Talks for a Camp");
+      _logger.LogInformation($"Getting all Talks for Camp {moniker}.");
 
       IQueryable<Talk> query = _context.Talks;
 
@@ -121,7 +121,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Talk> GetTalkByMonikerAsync(string moniker, int talkId, bool includeSpeakers = false)
     {
-      _logger.LogInformation($"Getting all Talks for a Camp");
+      _logger.LogInformation($"Getting the Talk for Camp {moniker} that has Talk ID {talkId}.");
 
       IQueryable<Talk> query = _context.Talks;
 
@@ -140,7 +140,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Speaker[]> GetSpeakersByMonikerAsync(string moniker)
     {
-      _logger.LogInformation($"Getting all Speakers for a Camp");
+      _logger.LogInformation($"Getting all Speakers for Camp {moniker}.");
 
       IQueryable<Speaker> query = _context.Talks
         .Where(t => t.Camp.Moniker == moniker)
@@ -154,7 +154,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Speaker[]> GetAllSpeakersAsync()
     {
-      _logger.LogInformation($"Getting Speaker");
+      _logger.LogInformation($"Getting all Speakers.");
 
       var query = _context.Speakers
         .OrderBy(t => t.LastName);
@@ -165,7 +165,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Speaker> GetSpeakerAsync(int speakerId)
     {
-      _logger.LogInformation($"Getting Speaker");
+      _logger.LogInformation($"Getting the Speaker that has Speaker ID {speakerId}.");
 
       var query = _context.Speakers
         .Where(t => t.SpeakerId == speakerId);
@@ -175,7 +175,7 @@ namespace CoreCodeCamp.Data
 
     public async Task<Speaker[]> GetAllSpeakersByCompany(string company)
     {
-        _logger.LogInformation($"Getting Speakers by Company");
+        _logger.LogInformation($"Getting all Speakers corresponding to company {company}.");
 
         var query = _context.Speakers.OrderBy(s => s.SpeakerId)
             .Where(s => s.Company == company);
