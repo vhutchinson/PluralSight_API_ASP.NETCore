@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace CoreCodeCamp.Controllers
 {
     [ApiController]
-    [Route("api/camps/{moniker}/{talkId}/[controller]")]
+    [Route("api/camps/{moniker}/[controller]")]
     public class SpeakersController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -62,7 +62,6 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
-        [Route("/api/camps/{moniker}/[controller]")]
         [HttpGet]
         public async Task<ActionResult<SpeakerModel[]>> GetByCamp(string moniker)
         {
@@ -77,49 +76,24 @@ namespace CoreCodeCamp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
             }
         }
-        
-        
-        [HttpPost]
-        public async Task<ActionResult<SpeakerModel>> Post(string moniker, int talkId, SpeakerModel model)
+
+        [HttpGet("search")]
+        public async Task<ActionResult<SpeakerModel[]>> SearchByCompany(string company)
         {
             try
             {
-                var camp = await _repository.GetCampAsync(moniker);
-                if (camp == null) return BadRequest("Camp does not exist");
+                var speakers = await _repository.GetAllSpeakersByCompany(company);
 
-                var talk = await _repository.GetTalkByMonikerAsync(moniker, talkId);
-                if (talk == null) return BadRequest("Talk does not exist");
+                if (!speakers.Any()) return NotFound("No speakers found for that company");
 
-                var speaker = _mapper.Map<Speaker>(model);
-                speaker.Talk = talk;
-                speaker.Talk.Camp = camp;
-
-                _repository.Add(speaker);
-
-                if (await _repository.SaveChangesAsync())
-                {
-                    var location = _linkGenerator.GetPathByAction("Get",
-                    "Speakers",
-                    new { moniker, talkId, id = model.SpeakerId });
-
-                    if (string.IsNullOrEmpty(location))
-                    {
-                        return BadRequest("Could not use current speaker ID");
-                    }
-
-                    return Created(location, _mapper.Map<SpeakerModel>(speaker));
-                }
-
-                var speakers = await _repository.GetAllSpeakersAsync();
-
-                
+                return _mapper.Map<SpeakerModel[]>(speakers);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
-            }
 
-            return BadRequest("Failed to save new speaker");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
         }
+
     }
 }
